@@ -1,0 +1,15 @@
+# Simple test to verify AWS Agent Evaluation framework works as-is
+evaluator:
+  model: claude-3-sonnet-20240229
+
+target:
+  type: shopify_extensions.targets.simple_shopify_target.SimpleShopifyTarget
+  base_url: http://localhost:3000
+
+tests:
+  simple_greeting:
+    steps:
+    - "Hello"
+    expected_results:
+    - Agent responds with a greeting
+    - Agent offers assistance
