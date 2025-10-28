@@ -21,7 +21,7 @@ def test_shopify_agent_connection():
     try:
         from shopify_extensions.targets.shopify_agent_target import ShopifyAgentTarget
         
-        target = ShopifyAgentTarget(base_url="http://localhost:3000")
+        target = ShopifyAgentTarget(base_url="http://localhost:64085")
         
         # Try a simple invoke (this will fail if agent isn't running, but that's OK)
         response = target.invoke("Hello")
@@ -66,7 +66,7 @@ def test_evaluation_workflow():
         test = Test(**test_config)
         
         # Create target
-        target = ShopifyAgentTarget(base_url="http://localhost:3000")
+        target = ShopifyAgentTarget(base_url="http://localhost:64085")
         
         # Create evaluator
         evaluator_config = {'model': 'claude-3'}

@@ -1,0 +1,406 @@
+# Order Management Test Scenarios
+# Comprehensive test scenarios covering order management, cart operations, and checkout
+
+evaluator:
+  model: claude-3-sonnet-20240229
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458  # Update to your agent's URL
+  shop_id: test-shop
+  shop_domain: https://your-store.myshopify.com  # Update to your shop domain
+  timeout: 30
+
+tests:
+  # === CART MANAGEMENT ===
+  
+  add_to_cart_basic:
+    category: cart_management
+    priority: high
+    tags: [cart, add_item, basic_operation]
+    steps:
+    - "Can you add this blue sweater to my cart?"
+    expected_results:
+    - The agent attempts to add the specified item to cart
+    - The agent confirms the action or explains if unable to complete
+    - The agent provides cart summary or next steps
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["add_attempt", "action_confirmation", "next_steps"]
+    performance_thresholds:
+      max_response_time: 8.0
+      max_tool_calls: 3
+
+  add_multiple_items:
+    category: cart_management
+    priority: medium
+    tags: [cart, multiple_items, bulk_operations]
+    steps:
+    - "I want to add three different One Piece cards to my cart"
+    - "Add Luffy, Zoro, and Nami cards please"
+    expected_results:
+    - The agent processes multiple item requests
+    - The agent attempts to add each specified item
+    - The agent provides summary of all additions
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["multiple_processing", "individual_additions", "comprehensive_summary"]
+    max_turns: 3
+    performance_thresholds:
+      max_response_time: 15.0
+      max_tool_calls: 6
+
+  cart_modification:
+    category: cart_management
+    priority: high
+    tags: [cart, modification, remove_items]
+    steps:
+    - "I want to remove something from my cart"
+    expected_results:
+    - The agent offers to help modify the cart
+    - The agent asks for specific items to remove or provides cart management options
+    - The agent guides through the removal process
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["modification_assistance", "specific_guidance", "process_support"]
+
+  cart_quantity_update:
+    category: cart_management
+    priority: medium
+    tags: [cart, quantity, update_items]
+    steps:
+    - "Can you change the quantity of items in my cart?"
+    - "I want 3 of the Luffy cards instead of 1"
+    expected_results:
+    - The agent offers to help update quantities
+    - The agent processes the specific quantity change request
+    - The agent confirms the updated cart contents
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["quantity_assistance", "specific_update", "confirmation"]
+    max_turns: 3
+
+  view_cart_contents:
+    category: cart_management
+    priority: medium
+    tags: [cart, view_contents, summary]
+    steps:
+    - "What's currently in my cart?"
+    expected_results:
+    - The agent retrieves and displays current cart contents
+    - The agent provides item names, quantities, and prices
+    - The agent offers to help with cart modifications
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["cart_retrieval", "detailed_contents", "modification_offer"]
+
+  # === CHECKOUT PROCESS ===
+  
+  checkout_assistance_basic:
+    category: checkout
+    priority: high
+    tags: [checkout, guidance, process_help]
+    steps:
+    - "How do I checkout?"
+    expected_results:
+    - The agent provides clear checkout instructions
+    - The agent offers to guide through the checkout process
+    - The agent mentions any requirements or steps needed
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["clear_instructions", "guidance_offer", "requirements_mentioned"]
+
+  checkout_with_account:
+    category: checkout
+    priority: medium
+    tags: [checkout, account, authentication]
+    steps:
+    - "I want to checkout with my account"
+    expected_results:
+    - The agent guides through account-based checkout
+    - The agent explains authentication requirements
+    - The agent provides steps for logged-in checkout process
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["account_guidance", "auth_explanation", "process_steps"]
+
+  guest_checkout:
+    category: checkout
+    priority: medium
+    tags: [checkout, guest, no_account]
+    steps:
+    - "Can I checkout without creating an account?"
+    expected_results:
+    - The agent confirms guest checkout availability
+    - The agent explains the guest checkout process
+    - The agent provides necessary steps and information required
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["guest_confirmation", "process_explanation", "required_information"]
+
+  checkout_payment_methods:
+    category: checkout
+    priority: medium
+    tags: [checkout, payment, methods]
+    steps:
+    - "What payment methods do you accept?"
+    expected_results:
+    - The agent lists accepted payment methods clearly
+    - The agent provides any relevant payment information
+    - The agent offers to help with payment-related questions
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["payment_methods", "relevant_information", "additional_help"]
+
+  # === ORDER TRACKING AND STATUS ===
+  
+  order_status_inquiry:
+    category: order_tracking
+    priority: high
+    tags: [order_status, tracking, customer_service]
+    steps:
+    - "Can you check my order status?"
+    expected_results:
+    - The agent offers to help check order status
+    - The agent requests necessary information (order number, email, etc.)
+    - The agent explains the process for status checking
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["status_assistance", "information_request", "process_explanation"]
+
+  order_tracking_with_number:
+    category: order_tracking
+    priority: high
+    tags: [order_tracking, order_number, specific_lookup]
+    steps:
+    - "I want to track my order number OP-12345"
+    expected_results:
+    - The agent attempts to look up the specific order number
+    - The agent provides available tracking information
+    - The agent offers additional assistance if needed
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["order_lookup", "tracking_information", "additional_assistance"]
+    performance_thresholds:
+      max_response_time: 12.0
+      max_tool_calls: 4
+
+  shipping_status_inquiry:
+    category: order_tracking
+    priority: medium
+    tags: [shipping, status, delivery]
+    steps:
+    - "When will my order be delivered?"
+    expected_results:
+    - The agent requests order identification information
+    - The agent attempts to provide delivery estimates
+    - The agent explains factors affecting delivery timing
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["identification_request", "delivery_estimates", "timing_factors"]
+
+  order_history_request:
+    category: order_tracking
+    priority: medium
+    tags: [order_history, account, past_orders]
+    steps:
+    - "Can you show me my previous orders?"
+    expected_results:
+    - The agent offers to help access order history
+    - The agent explains authentication requirements for account access
+    - The agent provides guidance on viewing order history
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["history_assistance", "auth_requirements", "access_guidance"]
+
+  # === RETURNS AND EXCHANGES ===
+  
+  return_request_basic:
+    category: returns
+    priority: high
+    tags: [returns, return_process, customer_service]
+    steps:
+    - "I want to return an item I purchased"
+    expected_results:
+    - The agent acknowledges the return request
+    - The agent explains the return process and requirements
+    - The agent asks for necessary information (order details, reason, etc.)
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["return_acknowledgment", "process_explanation", "information_gathering"]
+
+  return_with_order_number:
+    category: returns
+    priority: high
+    tags: [returns, order_number, specific_return]
+    steps:
+    - "I need to return an item from order OP-67890"
+    - "The Luffy card was damaged when it arrived"
+    expected_results:
+    - The agent processes the specific return request
+    - The agent acknowledges the damage issue with empathy
+    - The agent provides return steps and options for damaged items
+    success_criteria:
+      minimum_score: 0.85
+      required_elements: ["specific_processing", "damage_empathy", "return_options"]
+    max_turns: 3
+
+  exchange_request:
+    category: returns
+    priority: medium
+    tags: [exchange, size_exchange, product_swap]
+    steps:
+    - "Can I exchange this item for a different size?"
+    expected_results:
+    - The agent explains the exchange policy and process
+    - The agent asks for item and size details
+    - The agent provides steps for completing the exchange
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["exchange_policy", "detail_gathering", "completion_steps"]
+
+  return_policy_timeframe:
+    category: returns
+    priority: medium
+    tags: [returns, policy, timeframe, conditions]
+    steps:
+    - "I bought this item 45 days ago, can I still return it?"
+    expected_results:
+    - The agent checks the return policy timeframe
+    - The agent provides clear information about return windows
+    - The agent offers alternatives if outside normal return period
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["timeframe_check", "clear_policy", "alternative_options"]
+
+  # === ORDER MODIFICATIONS ===
+  
+  order_modification_request:
+    category: order_modification
+    priority: medium
+    tags: [order_modification, change_request, customer_service]
+    steps:
+    - "I just placed an order but want to change something"
+    expected_results:
+    - The agent acknowledges the modification request quickly
+    - The agent explains what modifications might be possible
+    - The agent provides steps to attempt the modification
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["quick_acknowledgment", "possibility_explanation", "modification_steps"]
+
+  cancel_order_request:
+    category: order_modification
+    priority: high
+    tags: [order_cancellation, cancel_request, urgent]
+    steps:
+    - "I need to cancel my order immediately"
+    expected_results:
+    - The agent treats the request with appropriate urgency
+    - The agent explains the cancellation process and timeframes
+    - The agent provides immediate steps to attempt cancellation
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["urgency_recognition", "process_explanation", "immediate_steps"]
+
+  shipping_address_change:
+    category: order_modification
+    priority: medium
+    tags: [shipping, address_change, modification]
+    steps:
+    - "Can I change the shipping address on my recent order?"
+    expected_results:
+    - The agent explains address change possibilities and limitations
+    - The agent provides steps to attempt the address change
+    - The agent mentions timing considerations for address changes
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["change_possibilities", "attempt_steps", "timing_considerations"]
+
+  # === COMPLEX ORDER SCENARIOS ===
+  
+  bulk_order_assistance:
+    category: complex_orders
+    priority: medium
+    tags: [bulk_order, large_quantity, special_handling]
+    steps:
+    - "I want to order 50 One Piece card packs for a tournament"
+    expected_results:
+    - The agent recognizes the bulk order nature
+    - The agent provides information about bulk ordering process
+    - The agent offers special assistance for large orders
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["bulk_recognition", "process_information", "special_assistance"]
+
+  gift_order_management:
+    category: complex_orders
+    priority: medium
+    tags: [gift_order, special_instructions, recipient]
+    steps:
+    - "I'm ordering this as a gift, can you add a message?"
+    expected_results:
+    - The agent acknowledges the gift nature of the order
+    - The agent explains gift message options and process
+    - The agent offers additional gift services if available
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["gift_acknowledgment", "message_options", "additional_services"]
+
+  international_order_inquiry:
+    category: complex_orders
+    priority: low
+    tags: [international, shipping, special_requirements]
+    steps:
+    - "Can you ship to Canada? What are the costs and restrictions?"
+    expected_results:
+    - The agent provides international shipping information
+    - The agent explains costs, timeframes, and any restrictions
+    - The agent offers to help with international order process
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["shipping_information", "costs_and_restrictions", "process_help"]
+
+  # === ERROR HANDLING IN ORDERS ===
+  
+  payment_failure_assistance:
+    category: order_errors
+    priority: high
+    tags: [payment_failure, checkout_error, problem_solving]
+    steps:
+    - "My payment failed during checkout, what should I do?"
+    expected_results:
+    - The agent acknowledges the payment issue with empathy
+    - The agent provides troubleshooting steps for payment failures
+    - The agent offers alternative payment methods or solutions
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["payment_empathy", "troubleshooting_steps", "alternative_solutions"]
+
+  order_confirmation_missing:
+    category: order_errors
+    priority: medium
+    tags: [confirmation, missing_email, order_verification]
+    steps:
+    - "I placed an order but didn't receive a confirmation email"
+    expected_results:
+    - The agent helps verify the order was placed successfully
+    - The agent explains possible reasons for missing confirmation
+    - The agent provides steps to resolve the confirmation issue
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["order_verification", "explanation_reasons", "resolution_steps"]
+
+  duplicate_order_concern:
+    category: order_errors
+    priority: medium
+    tags: [duplicate_order, accidental_order, concern]
+    steps:
+    - "I think I accidentally placed the same order twice"
+    expected_results:
+    - The agent takes the concern seriously
+    - The agent offers to help check for duplicate orders
+    - The agent provides steps to resolve duplicate order issues
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["serious_concern", "duplicate_check", "resolution_steps"]

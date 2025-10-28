@@ -1,0 +1,284 @@
+# Comprehensive Shopify Agent Test Scenarios
+# This file contains extensive test scenarios covering all major customer interaction patterns
+
+evaluator:
+  model: claude-3
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458  # Update to your agent's URL
+  shop_id: test-shop
+  shop_domain: https://your-store.myshopify.com  # Update to your shop domain
+  timeout: 30
+
+tests:
+  # === GREETING AND BASIC INTERACTION TESTS ===
+  
+  simple_greeting:
+    steps:
+    - "Hello, I need help with something"
+    expected_results:
+    - The agent responds with a friendly greeting
+    - The agent offers to help with shopping or store questions
+    
+  casual_greeting:
+    steps:
+    - "Hey there!"
+    expected_results:
+    - The agent responds in a friendly, welcoming manner
+    - The agent asks how they can help
+    
+  formal_greeting:
+    steps:
+    - "Good morning, I would like some assistance please"
+    expected_results:
+    - The agent responds professionally and courteously
+    - The agent offers specific types of assistance available
+
+  # === PRODUCT SEARCH AND INQUIRY TESTS ===
+  
+  specific_product_search:
+    steps:
+    - "Do you have any blue sweaters?"
+    expected_results:
+    - The agent searches for blue sweaters using available tools
+    - The agent provides product information or explains if none are found
+    
+  general_product_browse:
+    steps:
+    - "What products do you have?"
+    expected_results:
+    - The agent searches the product catalog
+    - The agent provides an overview of available products or categories
+    
+  product_with_specifications:
+    steps:
+    - "I'm looking for a red shirt in size large"
+    expected_results:
+    - The agent searches for shirts with specific color and size criteria
+    - The agent provides relevant product matches or alternatives
+    
+  price_range_inquiry:
+    steps:
+    - "Show me products under $50"
+    expected_results:
+    - The agent searches for products within the specified price range
+    - The agent presents affordable options or explains pricing
+    
+  out_of_stock_handling:
+    steps:
+    - "Do you have any winter coats?"
+    expected_results:
+    - The agent searches for winter coats
+    - If out of stock, the agent suggests alternatives or explains availability
+
+  # === ONE PIECE CARD GAME SPECIFIC TESTS ===
+  
+  one_piece_card_inquiry:
+    steps:
+    - "Do you have One Piece cards?"
+    expected_results:
+    - The agent confirms they specialize in One Piece Card Game products
+    - The agent offers to help find specific cards or sets
+    
+  specific_card_search:
+    steps:
+    - "I'm looking for Monkey D. Luffy cards"
+    expected_results:
+    - The agent searches for Luffy-specific cards
+    - The agent provides card information, pricing, or availability
+    
+  deck_building_help:
+    steps:
+    - "Can you help me build a red deck?"
+    expected_results:
+    - The agent offers deck building assistance
+    - The agent suggests relevant red cards or deck strategies
+    
+  card_set_inquiry:
+    steps:
+    - "What's in the latest One Piece set?"
+    expected_results:
+    - The agent provides information about recent card sets
+    - The agent offers to help find specific cards from new sets
+
+  # === STORE POLICY AND INFORMATION TESTS ===
+  
+  return_policy_inquiry:
+    steps:
+    - "What's your return policy?"
+    expected_results:
+    - The agent searches for and provides return policy information
+    - The agent explains the return process clearly
+    
+  shipping_information:
+    steps:
+    - "How much does shipping cost?"
+    expected_results:
+    - The agent provides shipping cost information
+    - The agent explains different shipping options if available
+    
+  store_hours_inquiry:
+    steps:
+    - "What are your store hours?"
+    expected_results:
+    - The agent provides store hours or operating information
+    - The agent offers additional contact information if relevant
+    
+  payment_methods:
+    steps:
+    - "What payment methods do you accept?"
+    expected_results:
+    - The agent lists accepted payment methods
+    - The agent provides clear payment information
+
+  # === MULTI-TURN CONVERSATION TESTS ===
+  
+  gift_shopping_conversation:
+    steps:
+    - "Hi there"
+    - "I'm looking for a gift"
+    - "It's for my mom who likes anime"
+    expected_results:
+    - The agent maintains context across all turns
+    - The agent asks relevant follow-up questions about the gift recipient
+    - The agent provides thoughtful gift suggestions based on anime interest
+    max_turns: 5
+    
+  product_comparison_conversation:
+    steps:
+    - "I'm trying to decide between two products"
+    - "Can you help me compare them?"
+    - "I want to know about quality and price"
+    expected_results:
+    - The agent offers to help with product comparison
+    - The agent asks for specific products to compare
+    - The agent provides detailed comparison information
+    max_turns: 6
+    
+  troubleshooting_conversation:
+    steps:
+    - "I'm having trouble with my order"
+    - "I can't find my tracking information"
+    - "My order number is 12345"
+    expected_results:
+    - The agent acknowledges the customer's concern
+    - The agent asks for relevant order details
+    - The agent attempts to help locate order information or provides next steps
+    max_turns: 5
+
+  # === CART AND CHECKOUT TESTS ===
+  
+  add_to_cart_request:
+    steps:
+    - "Can you add this blue sweater to my cart?"
+    expected_results:
+    - The agent attempts to add the specified item to cart
+    - The agent confirms the action or explains if unable to complete
+    
+  checkout_assistance:
+    steps:
+    - "How do I checkout?"
+    expected_results:
+    - The agent provides clear checkout instructions
+    - The agent offers to guide through the checkout process
+    
+  cart_modification:
+    steps:
+    - "I want to remove something from my cart"
+    expected_results:
+    - The agent offers to help modify the cart
+    - The agent asks for specific items to remove or provides cart management options
+
+  # === ERROR HANDLING AND EDGE CASES ===
+  
+  unclear_request:
+    steps:
+    - "I want that thing"
+    expected_results:
+    - The agent politely asks for clarification
+    - The agent offers to help identify what the customer is looking for
+    
+  impossible_request:
+    steps:
+    - "Can you deliver this to Mars?"
+    expected_results:
+    - The agent handles the impossible request gracefully
+    - The agent redirects to realistic shipping options
+    
+  very_long_message:
+    steps:
+    - "I'm looking for a very specific type of product that has these exact characteristics and I need it to be perfect because it's for a very important occasion and I have very particular requirements about the color and size and material and I need it delivered by tomorrow and I'm not sure if you have exactly what I'm looking for but I hope you can help me find something close to what I need"
+    expected_results:
+    - The agent processes the long request effectively
+    - The agent breaks down the requirements and addresses key points
+    - The agent asks clarifying questions to better assist
+
+  # === CUSTOMER ACCOUNT TESTS ===
+  
+  order_status_inquiry:
+    steps:
+    - "Can you check my order status?"
+    expected_results:
+    - The agent offers to help check order status
+    - The agent may request authentication or order details
+    
+  account_information:
+    steps:
+    - "I need to update my account information"
+    expected_results:
+    - The agent acknowledges the request
+    - The agent provides guidance on updating account information
+    
+  order_history_request:
+    steps:
+    - "Can you show me my previous orders?"
+    expected_results:
+    - The agent offers to help access order history
+    - The agent may initiate authentication process if needed
+
+  # === PERFORMANCE AND STRESS TESTS ===
+  
+  rapid_fire_questions:
+    steps:
+    - "Do you have shirts?"
+    - "What about pants?"
+    - "Any accessories?"
+    expected_results:
+    - The agent responds appropriately to each question
+    - The agent maintains consistent quality across rapid interactions
+    max_turns: 4
+    
+  context_switching:
+    steps:
+    - "I want to buy a shirt"
+    - "Actually, what's your return policy?"
+    - "Never mind, back to shirts - do you have blue ones?"
+    expected_results:
+    - The agent handles topic changes gracefully
+    - The agent maintains context when returning to previous topics
+    - The agent provides relevant information for each topic
+    max_turns: 4
+
+  # === SENTIMENT AND TONE TESTS ===
+  
+  frustrated_customer:
+    steps:
+    - "I'm really frustrated with my experience so far"
+    expected_results:
+    - The agent responds with empathy and understanding
+    - The agent offers to help resolve the customer's concerns
+    
+  excited_customer:
+    steps:
+    - "I'm so excited to shop here! This is amazing!"
+    expected_results:
+    - The agent matches the customer's positive energy appropriately
+    - The agent maintains professionalism while being enthusiastic
+    
+  confused_customer:
+    steps:
+    - "I'm not sure what I'm looking for, can you help?"
+    expected_results:
+    - The agent offers patient guidance
+    - The agent asks helpful questions to understand customer needs

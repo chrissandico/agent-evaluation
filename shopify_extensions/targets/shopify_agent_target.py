@@ -48,7 +48,9 @@ class ShopifyAgentTarget(BaseTarget):
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json',
-            'Accept': 'text/plain'  # Shopify agent returns streaming text
+            'Accept': 'text/event-stream',  # Shopify agent returns Server-Sent Events
+            'X-Shopify-Shop-Id': self.shop_id,
+            'Origin': self.shop_domain
         })
         
         # Disable SSL verification for localhost development
@@ -56,6 +58,12 @@ class ShopifyAgentTarget(BaseTarget):
             self.session.verify = False
             import urllib3
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        
+        # Add required headers for Shopify proxy
+        self.session.headers.update({
+            'X-Shopify-Shop-Id': self.shop_id,
+            'Origin': self.shop_domain
+        })
         
         # Conversation tracking
         self.conversation_id: Optional[str] = None
@@ -123,20 +131,36 @@ class ShopifyAgentTarget(BaseTarget):
         
         try:
             for line in response.iter_lines(decode_unicode=True):
-                if line.startswith('data: '):
+                if line and line.startswith('data: '):
                     data_part = line[6:]  # Remove 'data: ' prefix
                     
                     # Skip empty lines and end markers
                     if not data_part or data_part == '[DONE]':
                         continue
                     
-                    # Try to parse as JSON (some chunks might be JSON)
+                    # Try to parse as JSON (Shopify agent sends JSON messages)
                     try:
                         data_json = json.loads(data_part)
-                        if isinstance(data_json, dict) and 'content' in data_json:
-                            content_parts.append(data_json['content'])
-                        elif isinstance(data_json, str):
-                            content_parts.append(data_json)
+                        
+                        # Handle different message types from Shopify agent
+                        if isinstance(data_json, dict):
+                            if data_json.get('type') == 'chunk':
+                                # Text chunk from Claude
+                                content_parts.append(data_json.get('chunk', ''))
+                            elif data_json.get('type') == 'id':
+                                # Conversation ID - store it
+                                if 'conversation_id' in data_json:
+                                    self.conversation_id = data_json['conversation_id']
+                            elif data_json.get('type') == 'tool_use':
+                                # Tool usage message
+                                tool_msg = data_json.get('tool_use_message', '')
+                                content_parts.append(f"\n[{tool_msg}]\n")
+                            elif data_json.get('type') == 'product_results':
+                                # Product results
+                                products = data_json.get('products', [])
+                                if products:
+                                    content_parts.append(f"\n[Found {len(products)} products]\n")
+                        
                     except json.JSONDecodeError:
                         # If not JSON, treat as plain text
                         content_parts.append(data_part)

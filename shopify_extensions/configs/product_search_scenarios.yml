@@ -1,0 +1,321 @@
+# Product Search Test Scenarios
+# Comprehensive test scenarios covering product search and discovery
+
+evaluator:
+  model: claude-3-sonnet-20240229
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458  # Update to your agent's URL
+  shop_id: test-shop
+  shop_domain: https://your-store.myshopify.com  # Update to your shop domain
+  timeout: 30
+
+tests:
+  # === BASIC PRODUCT SEARCH ===
+  
+  specific_product_search:
+    category: product_search
+    priority: high
+    tags: [search, specific_product, tool_usage]
+    steps:
+    - "Do you have any blue sweaters?"
+    expected_results:
+    - The agent searches for blue sweaters using available tools
+    - The agent provides product information including names, prices, and availability
+    - The agent offers to show more details or similar products
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["tool_usage", "product_information", "additional_options"]
+    performance_thresholds:
+      max_response_time: 10.0
+      max_tool_calls: 3
+
+  general_product_browse:
+    category: product_search
+    priority: medium
+    tags: [search, browse, catalog_overview]
+    steps:
+    - "What products do you have?"
+    expected_results:
+    - The agent searches the product catalog
+    - The agent provides an overview of available products or categories
+    - The agent offers to help narrow down based on customer interests
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["catalog_search", "overview_provided", "narrowing_assistance"]
+
+  product_with_specifications:
+    category: product_search
+    priority: high
+    tags: [search, specifications, detailed_criteria]
+    steps:
+    - "I'm looking for a red shirt in size large"
+    expected_results:
+    - The agent searches for shirts with specific color and size criteria
+    - The agent provides relevant product matches with specifications
+    - The agent offers alternatives if exact match isn't available
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["specification_search", "relevant_matches", "alternatives"]
+    performance_thresholds:
+      max_response_time: 12.0
+      max_tool_calls: 4
+
+  # === PRICE-BASED SEARCH ===
+  
+  price_range_inquiry:
+    category: price_search
+    priority: medium
+    tags: [search, price_range, budget]
+    steps:
+    - "Show me products under $50"
+    expected_results:
+    - The agent searches for products within the specified price range
+    - The agent presents affordable options with prices clearly displayed
+    - The agent offers to adjust the range if needed
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["price_filtering", "clear_pricing", "range_adjustment"]
+
+  budget_conscious_search:
+    category: price_search
+    priority: medium
+    tags: [search, budget, value]
+    steps:
+    - "I'm on a tight budget, what's your cheapest option?"
+    expected_results:
+    - The agent searches for the most affordable products
+    - The agent presents budget-friendly options
+    - The agent emphasizes value and quality within budget constraints
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["budget_search", "affordable_options", "value_emphasis"]
+
+  luxury_price_search:
+    category: price_search
+    priority: low
+    tags: [search, luxury, high_price]
+    steps:
+    - "Show me your premium products"
+    expected_results:
+    - The agent searches for higher-end products
+    - The agent highlights premium features and quality
+    - The agent provides detailed information about luxury items
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["premium_search", "quality_highlights", "detailed_information"]
+
+  # === ONE PIECE CARD GAME SPECIFIC SEARCHES ===
+  
+  one_piece_card_inquiry:
+    category: one_piece_cards
+    priority: high
+    tags: [one_piece, cards, specialty_product]
+    steps:
+    - "Do you have One Piece cards?"
+    expected_results:
+    - The agent confirms they specialize in One Piece Card Game products
+    - The agent offers to help find specific cards or sets
+    - The agent demonstrates knowledge of the product category
+    success_criteria:
+      minimum_score: 0.9
+      required_elements: ["specialty_confirmation", "specific_assistance", "product_knowledge"]
+
+  specific_character_search:
+    category: one_piece_cards
+    priority: high
+    tags: [one_piece, character_cards, luffy]
+    steps:
+    - "I'm looking for Monkey D. Luffy cards"
+    expected_results:
+    - The agent searches for Luffy-specific cards
+    - The agent provides card information, pricing, and availability
+    - The agent offers different Luffy card variants if available
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["character_search", "card_details", "variant_options"]
+    performance_thresholds:
+      max_response_time: 15.0
+      max_tool_calls: 5
+
+  deck_building_search:
+    category: one_piece_cards
+    priority: medium
+    tags: [one_piece, deck_building, strategy]
+    steps:
+    - "Can you help me find cards for a red deck?"
+    expected_results:
+    - The agent searches for red-colored One Piece cards
+    - The agent offers deck building assistance and strategy advice
+    - The agent suggests complementary cards for red deck themes
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["color_search", "deck_assistance", "strategic_suggestions"]
+
+  card_set_search:
+    category: one_piece_cards
+    priority: medium
+    tags: [one_piece, card_sets, latest_releases]
+    steps:
+    - "What's in the latest One Piece set?"
+    expected_results:
+    - The agent provides information about recent card sets
+    - The agent offers to help find specific cards from new sets
+    - The agent explains set contents and notable cards
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["set_information", "specific_card_help", "content_explanation"]
+
+  rare_card_search:
+    category: one_piece_cards
+    priority: medium
+    tags: [one_piece, rare_cards, collectibles]
+    steps:
+    - "Do you have any rare or special One Piece cards?"
+    expected_results:
+    - The agent searches for rare and special edition cards
+    - The agent explains rarity levels and special features
+    - The agent provides pricing and availability for rare items
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["rarity_search", "rarity_explanation", "special_pricing"]
+
+  # === AVAILABILITY AND STOCK SEARCHES ===
+  
+  out_of_stock_handling:
+    category: availability
+    priority: high
+    tags: [availability, out_of_stock, alternatives]
+    steps:
+    - "Do you have any winter coats in stock?"
+    expected_results:
+    - The agent searches for winter coats and checks availability
+    - If out of stock, the agent explains the situation clearly
+    - The agent suggests alternatives or provides restock information
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["availability_check", "clear_explanation", "alternatives_or_restock"]
+
+  restock_inquiry:
+    category: availability
+    priority: medium
+    tags: [availability, restock, future_availability]
+    steps:
+    - "When will you get more of this item in stock?"
+    expected_results:
+    - The agent checks restock information if available
+    - The agent provides realistic expectations about restocking
+    - The agent offers to notify customer when item becomes available
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["restock_check", "realistic_expectations", "notification_offer"]
+
+  limited_quantity_search:
+    category: availability
+    priority: medium
+    tags: [availability, limited_quantity, urgency]
+    steps:
+    - "How many of this item do you have left?"
+    expected_results:
+    - The agent checks current stock levels
+    - The agent provides quantity information if available
+    - The agent creates appropriate urgency if stock is low
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["stock_check", "quantity_information", "appropriate_urgency"]
+
+  # === COMPLEX SEARCH SCENARIOS ===
+  
+  multi_criteria_search:
+    category: complex_search
+    priority: high
+    tags: [search, multi_criteria, detailed_requirements]
+    steps:
+    - "I need a blue or red shirt, size medium or large, under $30"
+    expected_results:
+    - The agent processes multiple search criteria effectively
+    - The agent searches for products matching all specified requirements
+    - The agent presents options that meet the complex criteria
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["multi_criteria_processing", "comprehensive_search", "matching_results"]
+    performance_thresholds:
+      max_response_time: 15.0
+      max_tool_calls: 6
+
+  vague_search_clarification:
+    category: complex_search
+    priority: medium
+    tags: [search, vague_request, clarification]
+    steps:
+    - "I want something nice"
+    expected_results:
+    - The agent asks clarifying questions to understand customer needs
+    - The agent offers categories or suggestions to help narrow down
+    - The agent maintains patience while gathering more specific requirements
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["clarifying_questions", "category_suggestions", "patient_assistance"]
+    max_turns: 4
+
+  comparison_search:
+    category: complex_search
+    priority: medium
+    tags: [search, comparison, decision_making]
+    steps:
+    - "Can you help me compare these two products?"
+    - "I want to know about quality and price differences"
+    expected_results:
+    - The agent offers to help with product comparison
+    - The agent asks for specific products to compare
+    - The agent provides detailed comparison information when products are specified
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["comparison_offer", "product_specification", "detailed_comparison"]
+    max_turns: 4
+
+  # === SEARCH ERROR HANDLING ===
+  
+  no_results_handling:
+    category: search_errors
+    priority: high
+    tags: [search, no_results, alternatives]
+    steps:
+    - "Do you have any purple dinosaur costumes?"
+    expected_results:
+    - The agent searches thoroughly for the requested item
+    - The agent clearly explains that no matching products were found
+    - The agent offers related alternatives or suggests similar products
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["thorough_search", "clear_explanation", "alternative_suggestions"]
+
+  search_system_error:
+    category: search_errors
+    priority: medium
+    tags: [search, system_error, graceful_handling]
+    steps:
+    - "Can you search for shirts?"
+    expected_results:
+    - If search tools fail, the agent handles the error gracefully
+    - The agent explains the technical difficulty professionally
+    - The agent offers alternative ways to help the customer
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["graceful_error_handling", "professional_explanation", "alternative_assistance"]
+
+  ambiguous_search_terms:
+    category: search_errors
+    priority: medium
+    tags: [search, ambiguous, clarification]
+    steps:
+    - "I'm looking for bands"
+    expected_results:
+    - The agent recognizes the ambiguous term (music bands vs. elastic bands, etc.)
+    - The agent asks for clarification about what type of "bands" are needed
+    - The agent provides examples to help customer specify their needs
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["ambiguity_recognition", "clarification_request", "helpful_examples"]
+    max_turns: 3

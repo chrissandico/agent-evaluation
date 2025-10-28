@@ -1,0 +1,278 @@
+# Customer Service Test Scenarios
+# Comprehensive test scenarios covering customer service interactions
+
+evaluator:
+  model: claude-3-sonnet-20240229
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458  # Update to your agent's URL
+  shop_id: test-shop
+  shop_domain: https://your-store.myshopify.com  # Update to your shop domain
+  timeout: 30
+
+tests:
+  # === GREETING AND INITIAL CONTACT ===
+  
+  friendly_greeting:
+    category: greeting
+    priority: high
+    tags: [greeting, basic, customer_service]
+    steps:
+    - "Hello, I need help with something"
+    expected_results:
+    - The agent responds with a friendly, professional greeting
+    - The agent offers specific types of assistance available
+    - The agent maintains a helpful and welcoming tone
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["greeting", "offer_help", "professional_tone"]
+    performance_thresholds:
+      max_response_time: 5.0
+      max_tool_calls: 1
+
+  casual_greeting:
+    category: greeting
+    priority: medium
+    tags: [greeting, casual, tone_matching]
+    steps:
+    - "Hey there!"
+    expected_results:
+    - The agent responds in a friendly, approachable manner
+    - The agent matches the casual tone appropriately
+    - The agent asks how they can help
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["friendly_response", "tone_matching", "offer_assistance"]
+
+  formal_greeting:
+    category: greeting
+    priority: medium
+    tags: [greeting, formal, professional]
+    steps:
+    - "Good morning, I would like some assistance please"
+    expected_results:
+    - The agent responds professionally and courteously
+    - The agent maintains formal tone matching customer's approach
+    - The agent offers specific types of assistance available
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["professional_tone", "courteous_response", "specific_assistance"]
+
+  # === COMPLAINT HANDLING ===
+  
+  frustrated_customer_basic:
+    category: complaint_handling
+    priority: high
+    tags: [complaint, frustration, empathy, de_escalation]
+    steps:
+    - "I'm really frustrated with my experience so far"
+    expected_results:
+    - The agent responds with empathy and understanding
+    - The agent acknowledges the customer's frustration
+    - The agent offers to help resolve the customer's concerns
+    - The agent maintains a calm, professional demeanor
+    success_criteria:
+      minimum_score: 0.9
+      required_elements: ["empathy", "acknowledgment", "solution_focus", "professional_tone"]
+    performance_thresholds:
+      max_response_time: 8.0
+      max_tool_calls: 2
+
+  order_problem_complaint:
+    category: complaint_handling
+    priority: high
+    tags: [complaint, order_issue, problem_solving]
+    steps:
+    - "I'm having trouble with my order and nobody is helping me"
+    - "This is really disappointing"
+    expected_results:
+    - The agent acknowledges the customer's concern empathetically
+    - The agent apologizes for the poor experience
+    - The agent offers specific steps to resolve the order issue
+    - The agent asks for order details to provide targeted help
+    success_criteria:
+      minimum_score: 0.85
+      required_elements: ["empathy", "apology", "solution_steps", "information_gathering"]
+    max_turns: 3
+
+  shipping_delay_complaint:
+    category: complaint_handling
+    priority: high
+    tags: [complaint, shipping, delay, expectations]
+    steps:
+    - "My order was supposed to arrive yesterday but it's still not here"
+    - "I need this for an important event tomorrow"
+    expected_results:
+    - The agent acknowledges the urgency and importance
+    - The agent offers to check shipping status
+    - The agent provides realistic expectations and alternatives
+    - The agent shows understanding of the customer's situation
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["urgency_acknowledgment", "status_check", "realistic_expectations", "empathy"]
+    max_turns: 4
+
+  # === ESCALATION SCENARIOS ===
+  
+  escalation_request:
+    category: escalation
+    priority: high
+    tags: [escalation, manager, authority]
+    steps:
+    - "I want to speak to a manager right now"
+    expected_results:
+    - The agent remains calm and professional
+    - The agent explains their role and capabilities
+    - The agent offers to help resolve the issue first
+    - The agent provides escalation options if needed
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["calm_response", "role_explanation", "problem_solving_attempt", "escalation_path"]
+
+  complex_issue_escalation:
+    category: escalation
+    priority: high
+    tags: [escalation, complex_issue, limitations]
+    steps:
+    - "This is a very complex billing issue that needs human review"
+    - "Can you transfer me to someone who can actually help?"
+    expected_results:
+    - The agent acknowledges the complexity of the issue
+    - The agent explains what they can and cannot do
+    - The agent provides clear next steps for human assistance
+    - The agent offers to document the issue for the human agent
+    success_criteria:
+      minimum_score: 0.85
+      required_elements: ["complexity_acknowledgment", "capability_explanation", "clear_next_steps", "documentation_offer"]
+    max_turns: 3
+
+  # === EMPATHY AND EMOTIONAL SUPPORT ===
+  
+  disappointed_customer:
+    category: empathy
+    priority: high
+    tags: [empathy, disappointment, emotional_support]
+    steps:
+    - "I'm really disappointed that the product I wanted is out of stock"
+    - "I was really looking forward to getting it"
+    expected_results:
+    - The agent expresses genuine empathy for the disappointment
+    - The agent offers alternatives or solutions
+    - The agent provides information about restocking if available
+    - The agent maintains a supportive tone throughout
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["genuine_empathy", "alternative_solutions", "restock_information", "supportive_tone"]
+    max_turns: 3
+
+  gift_urgency_stress:
+    category: empathy
+    priority: medium
+    tags: [empathy, urgency, gift, stress]
+    steps:
+    - "I need to find a perfect gift for my daughter's birthday tomorrow"
+    - "I'm really stressed because I don't know what to get her"
+    expected_results:
+    - The agent acknowledges the time pressure and stress
+    - The agent offers to help find suitable gift options
+    - The agent asks relevant questions about the recipient
+    - The agent provides reassuring guidance
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["stress_acknowledgment", "gift_assistance", "relevant_questions", "reassurance"]
+    max_turns: 5
+
+  # === POLICY EXPLANATION ===
+  
+  return_policy_inquiry:
+    category: policy_explanation
+    priority: high
+    tags: [policy, returns, information]
+    steps:
+    - "What's your return policy?"
+    expected_results:
+    - The agent searches for and provides return policy information
+    - The agent explains the return process clearly
+    - The agent mentions any important conditions or timeframes
+    - The agent offers to help with specific return questions
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["policy_information", "clear_explanation", "conditions_mentioned", "additional_help"]
+    performance_thresholds:
+      max_response_time: 10.0
+      max_tool_calls: 3
+
+  shipping_policy_detailed:
+    category: policy_explanation
+    priority: medium
+    tags: [policy, shipping, costs, timeframes]
+    steps:
+    - "How much does shipping cost and how long does it take?"
+    expected_results:
+    - The agent provides shipping cost information
+    - The agent explains different shipping options and timeframes
+    - The agent mentions any free shipping thresholds
+    - The agent offers to help calculate shipping for specific orders
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["cost_information", "shipping_options", "timeframes", "calculation_help"]
+
+  exchange_policy_complex:
+    category: policy_explanation
+    priority: medium
+    tags: [policy, exchange, conditions, complex]
+    steps:
+    - "Can I exchange this item for a different size?"
+    - "What if it's been more than 30 days?"
+    expected_results:
+    - The agent explains the exchange policy clearly
+    - The agent addresses the time limitation question
+    - The agent provides alternatives if standard exchange isn't possible
+    - The agent offers to check specific item eligibility
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["exchange_policy", "time_limitations", "alternatives", "eligibility_check"]
+    max_turns: 3
+
+  # === MULTI-TURN CUSTOMER SERVICE ===
+  
+  comprehensive_support_session:
+    category: multi_turn_support
+    priority: high
+    tags: [multi_turn, comprehensive, problem_solving, context_maintenance]
+    steps:
+    - "Hi, I need help with several things"
+    - "First, I want to return an item"
+    - "Also, I'm looking for a replacement"
+    - "And I have a question about my account"
+    expected_results:
+    - The agent handles multiple requests systematically
+    - The agent maintains context across all topics
+    - The agent prioritizes and organizes the customer's needs
+    - The agent provides complete assistance for each request
+    success_criteria:
+      minimum_score: 0.85
+      required_elements: ["systematic_handling", "context_maintenance", "prioritization", "complete_assistance"]
+    max_turns: 8
+    performance_thresholds:
+      max_response_time: 12.0
+      max_tool_calls: 6
+
+  follow_up_conversation:
+    category: multi_turn_support
+    priority: medium
+    tags: [multi_turn, follow_up, continuity]
+    steps:
+    - "I spoke with someone earlier about a return"
+    - "I was told to contact back with my order number"
+    - "My order number is OP-12345"
+    expected_results:
+    - The agent acknowledges the previous conversation
+    - The agent uses the provided order number to assist
+    - The agent continues the return process efficiently
+    - The agent maintains continuity with previous interaction
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["previous_acknowledgment", "order_lookup", "process_continuation", "continuity"]
+    max_turns: 4

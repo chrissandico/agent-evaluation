@@ -1,0 +1,8 @@
+# Multi-Turn Conversation Test Scenarios
+# Comprehensive test scenarios covering extended conversations and context maintenance
+
+evaluator:
+  model: claude-3-sonnet-20240229
+
+target:
+  type: shopify_extensio

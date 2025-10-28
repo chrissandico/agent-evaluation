@@ -1,0 +1,361 @@
+# Edge Cases and Error Handling Test Scenarios
+# Comprehensive test scenarios covering edge cases, error conditions, and unusual situations
+
+evaluator:
+  model: claude-3-sonnet-20240229
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458  # Update to your agent's URL
+  shop_id: test-shop
+  shop_domain: https://your-store.myshopify.com  # Update to your shop domain
+  timeout: 30
+
+tests:
+  # === UNCLEAR AND AMBIGUOUS REQUESTS ===
+  
+  unclear_request_basic:
+    category: unclear_requests
+    priority: high
+    tags: [unclear, ambiguous, clarification]
+    steps:
+    - "I want that thing"
+    expected_results:
+    - The agent politely asks for clarification
+    - The agent offers to help identify what the customer is looking for
+    - The agent provides examples or categories to help narrow down the request
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["polite_clarification", "identification_help", "helpful_examples"]
+
+  vague_color_request:
+    category: unclear_requests
+    priority: medium
+    tags: [vague, color, specification]
+    steps:
+    - "Do you have anything in that color?"
+    expected_results:
+    - The agent recognizes the missing color specification
+    - The agent asks which specific color the customer is referring to
+    - The agent offers to show products in various colors
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["missing_recognition", "color_clarification", "color_options"]
+
+  pronoun_confusion:
+    category: unclear_requests
+    priority: medium
+    tags: [pronouns, context, confusion]
+    steps:
+    - "Can you tell me more about it?"
+    expected_results:
+    - The agent recognizes the lack of context for "it"
+    - The agent asks for clarification about what specific item is being referenced
+    - The agent offers to provide information once the item is specified
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["context_recognition", "reference_clarification", "conditional_help"]
+
+  # === IMPOSSIBLE OR UNREALISTIC REQUESTS ===
+  
+  impossible_delivery:
+    category: impossible_requests
+    priority: medium
+    tags: [impossible, delivery, unrealistic]
+    steps:
+    - "Can you deliver this to Mars?"
+    expected_results:
+    - The agent handles the impossible request gracefully with humor if appropriate
+    - The agent redirects to realistic shipping options
+    - The agent maintains a helpful tone while explaining limitations
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["graceful_handling", "realistic_redirect", "helpful_tone"]
+
+  time_travel_request:
+    category: impossible_requests
+    priority: low
+    tags: [impossible, time, unrealistic]
+    steps:
+    - "Can you deliver this yesterday?"
+    expected_results:
+    - The agent acknowledges the urgency behind the request
+    - The agent explains realistic delivery timeframes
+    - The agent offers the fastest available shipping options
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["urgency_acknowledgment", "realistic_timeframes", "fastest_options"]
+
+  magical_product_request:
+    category: impossible_requests
+    priority: low
+    tags: [impossible, magical, fictional]
+    steps:
+    - "Do you sell actual Devil Fruits from One Piece?"
+    expected_results:
+    - The agent handles the fictional request with appropriate tone
+    - The agent redirects to actual One Piece merchandise available
+    - The agent maintains engagement while being realistic
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["appropriate_tone", "merchandise_redirect", "realistic_engagement"]
+
+  # === VERY LONG AND COMPLEX MESSAGES ===
+  
+  extremely_long_message:
+    category: long_messages
+    priority: medium
+    tags: [long_message, complex, processing]
+    steps:
+    - "I'm looking for a very specific type of product that has these exact characteristics and I need it to be perfect because it's for a very important occasion and I have very particular requirements about the color and size and material and I need it delivered by tomorrow and I'm not sure if you have exactly what I'm looking for but I hope you can help me find something close to what I need and I'm willing to pay extra for rush shipping if that's possible and I also want to make sure it comes with a gift receipt because it's actually a present for someone special and I don't want them to see the price and I'm wondering if you have any recommendations for similar products in case the exact one I want isn't available"
+    expected_results:
+    - The agent processes the long request effectively without being overwhelmed
+    - The agent breaks down the requirements into manageable components
+    - The agent addresses key points systematically (product specs, delivery, gift options)
+    - The agent asks clarifying questions to prioritize the most important requirements
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["effective_processing", "requirement_breakdown", "systematic_addressing", "prioritization_questions"]
+    max_turns: 4
+
+  run_on_sentence_request:
+    category: long_messages
+    priority: medium
+    tags: [run_on, complex_grammar, parsing]
+    steps:
+    - "So I was thinking about getting something for my friend who really likes anime and especially One Piece and I know they collect cards but I'm not sure which ones they already have and I don't want to get duplicates but I also want to surprise them and I was wondering if you could help me figure out what would be a good gift that's not too expensive but also not too cheap because I want it to be meaningful"
+    expected_results:
+    - The agent parses the complex sentence structure effectively
+    - The agent identifies the key elements (gift for One Piece fan, avoid duplicates, budget considerations)
+    - The agent asks targeted questions to help with gift selection
+    - The agent offers practical solutions for the duplicate concern
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["effective_parsing", "key_identification", "targeted_questions", "practical_solutions"]
+    max_turns: 3
+
+  # === TECHNICAL AND SYSTEM ERRORS ===
+  
+  search_system_failure:
+    category: system_errors
+    priority: high
+    tags: [system_error, search_failure, graceful_degradation]
+    steps:
+    - "Can you search for blue shirts?"
+    expected_results:
+    - If search tools fail, the agent handles the error gracefully
+    - The agent explains the technical difficulty professionally
+    - The agent offers alternative ways to help the customer
+    - The agent apologizes for the inconvenience
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["graceful_error_handling", "professional_explanation", "alternative_assistance", "appropriate_apology"]
+
+  timeout_scenario:
+    category: system_errors
+    priority: medium
+    tags: [timeout, slow_response, system_performance]
+    steps:
+    - "Show me your most popular products"
+    expected_results:
+    - If the request times out, the agent acknowledges the delay
+    - The agent explains that the system is taking longer than usual
+    - The agent offers to try again or suggests alternative approaches
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["delay_acknowledgment", "system_explanation", "retry_alternatives"]
+
+  # === INAPPROPRIATE OR PROBLEMATIC CONTENT ===
+  
+  inappropriate_language_mild:
+    category: inappropriate_content
+    priority: high
+    tags: [inappropriate, language, professional_response]
+    steps:
+    - "This is damn frustrating, where are my products?"
+    expected_results:
+    - The agent maintains professionalism despite inappropriate language
+    - The agent focuses on addressing the customer's underlying concern
+    - The agent doesn't mirror or acknowledge the inappropriate language
+    - The agent offers constructive help for the frustration
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["maintained_professionalism", "concern_focus", "constructive_help"]
+
+  off_topic_conversation:
+    category: inappropriate_content
+    priority: medium
+    tags: [off_topic, redirect, boundaries]
+    steps:
+    - "What do you think about the weather today?"
+    expected_results:
+    - The agent politely redirects the conversation to shopping-related topics
+    - The agent maintains friendly boundaries
+    - The agent offers to help with store-related questions
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["polite_redirect", "friendly_boundaries", "store_focus"]
+
+  personal_information_request:
+    category: inappropriate_content
+    priority: high
+    tags: [personal_info, privacy, boundaries]
+    steps:
+    - "What's your real name and where do you live?"
+    expected_results:
+    - The agent maintains appropriate privacy boundaries
+    - The agent explains their role as a shopping assistant
+    - The agent redirects to how they can help with shopping needs
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["privacy_boundaries", "role_explanation", "shopping_redirect"]
+
+  # === MULTILINGUAL AND COMMUNICATION CHALLENGES ===
+  
+  mixed_language_request:
+    category: communication_challenges
+    priority: medium
+    tags: [multilingual, mixed_language, understanding]
+    steps:
+    - "Hello, je cherche une carte Luffy, do you have?"
+    expected_results:
+    - The agent attempts to understand the mixed-language request
+    - The agent responds in English while acknowledging the multilingual nature
+    - The agent focuses on helping find the Luffy card mentioned
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["understanding_attempt", "english_response", "product_focus"]
+
+  typo_heavy_message:
+    category: communication_challenges
+    priority: medium
+    tags: [typos, spelling_errors, interpretation]
+    steps:
+    - "Do yu hav any blu swetrs in siz larg?"
+    expected_results:
+    - The agent interprets the message despite multiple typos
+    - The agent responds based on the intended meaning (blue sweaters in size large)
+    - The agent doesn't correct the customer's spelling
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["typo_interpretation", "intended_meaning", "no_correction"]
+
+  # === CONTEXT AND MEMORY CHALLENGES ===
+  
+  context_switching_rapid:
+    category: context_challenges
+    priority: medium
+    tags: [context_switching, rapid_changes, memory]
+    steps:
+    - "I want to buy a shirt"
+    - "Actually, what's your return policy?"
+    - "Never mind that, back to shirts - do you have blue ones?"
+    - "Wait, I also need to know about shipping costs"
+    expected_results:
+    - The agent handles rapid topic changes gracefully
+    - The agent maintains context when returning to previous topics
+    - The agent addresses each question appropriately
+    - The agent offers to organize the multiple requests
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["graceful_switching", "context_maintenance", "appropriate_addressing", "organization_offer"]
+    max_turns: 5
+
+  contradictory_requests:
+    category: context_challenges
+    priority: medium
+    tags: [contradictory, conflicting, clarification]
+    steps:
+    - "I want the cheapest option available"
+    - "But I also want the highest quality product"
+    expected_results:
+    - The agent recognizes the potential contradiction
+    - The agent asks for clarification about priorities
+    - The agent offers to find the best value options
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["contradiction_recognition", "priority_clarification", "value_options"]
+    max_turns: 3
+
+  # === EXTREME EDGE CASES ===
+  
+  empty_message:
+    category: extreme_cases
+    priority: low
+    tags: [empty, no_content, handling]
+    steps:
+    - ""
+    expected_results:
+    - The agent handles the empty message gracefully
+    - The agent prompts for a message or question
+    - The agent offers general assistance
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["graceful_handling", "message_prompt", "general_assistance"]
+
+  only_punctuation:
+    category: extreme_cases
+    priority: low
+    tags: [punctuation, no_words, unusual]
+    steps:
+    - "??!!"
+    expected_results:
+    - The agent interprets this as a question or confusion
+    - The agent asks how they can help
+    - The agent offers to clarify any confusion
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["confusion_interpretation", "help_offer", "clarification_offer"]
+
+  numbers_only:
+    category: extreme_cases
+    priority: low
+    tags: [numbers, no_context, interpretation]
+    steps:
+    - "12345"
+    expected_results:
+    - The agent asks for context about the numbers
+    - The agent suggests possible meanings (order number, product code, etc.)
+    - The agent offers to help once context is provided
+    success_criteria:
+      minimum_score: 0.7
+      required_elements: ["context_request", "meaning_suggestions", "conditional_help"]
+
+  # === STRESS TESTING SCENARIOS ===
+  
+  rapid_fire_questions:
+    category: stress_testing
+    priority: medium
+    tags: [rapid_fire, multiple_questions, performance]
+    steps:
+    - "Do you have shirts?"
+    - "What about pants?"
+    - "Any accessories?"
+    - "How much do they cost?"
+    expected_results:
+    - The agent responds appropriately to each question in sequence
+    - The agent maintains consistent quality across rapid interactions
+    - The agent doesn't get overwhelmed by the pace
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["sequential_responses", "consistent_quality", "pace_management"]
+    max_turns: 5
+    performance_thresholds:
+      max_response_time: 8.0
+      max_tool_calls: 8
+
+  information_overload:
+    category: stress_testing
+    priority: medium
+    tags: [information_overload, complex_requirements, processing]
+    steps:
+    - "I need a red or blue shirt in size medium or large under $30 that ships within 2 days to Canada with gift wrapping and a personalized message that says happy birthday and I want to pay with PayPal and I need a receipt emailed to a different address and I want to know if you have a loyalty program and what your return policy is"
+    expected_results:
+    - The agent processes the complex multi-part request systematically
+    - The agent breaks down the requirements into manageable components
+    - The agent addresses each requirement or explains what's possible
+    - The agent prioritizes the most important elements
+    success_criteria:
+      minimum_score: 0.8
+      required_elements: ["systematic_processing", "component_breakdown", "requirement_addressing", "prioritization"]
+    max_turns: 4
