@@ -1,0 +1,314 @@
+# Store-Specific Test Suite Template
+# 
+# Instructions:
+# 1. Meet with store owner to gather top customer questions
+# 2. Replace [PLACEHOLDERS] with actual questions and expected behaviors
+# 3. Update base_url and shop_domain with your actual values
+# 4. Run tests: python -m agenteval.cli run --config store_specific_tests.yml
+#
+# Created: [DATE]
+# Store: [STORE NAME]
+# Last Updated: [DATE]
+
+evaluator:
+  model: claude-3
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458  # Update to your agent URL
+  shop_id: test-shop
+  shop_domain: https://your-store.myshopify.com  # Update to your shop
+  timeout: 30
+
+tests:
+  # ============================================================================
+  # HIGH PRIORITY TESTS
+  # These are the most frequently asked questions (asked 10+ times per month)
+  # ============================================================================
+  
+  top_question_1:
+    steps:
+    - "[REPLACE: Most frequently asked customer question]"
+    expected_results:
+    - "[REPLACE: Agent should provide accurate information]"
+    - "[REPLACE: Agent should offer next steps or related help]"
+    max_turns: 2
+    # Notes: Frequency: [X times/month], Business Impact: [High/Medium/Low]
+    
+  top_question_2:
+    steps:
+    - "[REPLACE: Second most common question]"
+    expected_results:
+    - "[REPLACE: Expected agent behavior]"
+    max_turns: 2
+    
+  top_question_3:
+    steps:
+    - "[REPLACE: Third most common question]"
+    expected_results:
+    - "[REPLACE: Expected agent behavior]"
+    max_turns: 2
+
+  # ============================================================================
+  # PRODUCT INFORMATION TESTS
+  # Questions about product availability, specs, pricing, comparisons
+  # ============================================================================
+  
+  product_availability:
+    steps:
+    - "[REPLACE: Do you have [specific product] in stock?]"
+    expected_results:
+    - "Agent searches product catalog"
+    - "Agent provides availability status"
+    - "Agent offers alternatives if out of stock"
+    max_turns: 3
+    
+  product_specifications:
+    steps:
+    - "[REPLACE: What are the specs/details of [product]?]"
+    expected_results:
+    - "Agent retrieves product information"
+    - "Agent provides relevant specifications"
+    - "Agent offers to answer follow-up questions"
+    max_turns: 2
+    
+  product_comparison:
+    steps:
+    - "[REPLACE: What's the difference between [Product A] and [Product B]?]"
+    expected_results:
+    - "Agent identifies both products"
+    - "Agent explains key differences"
+    - "Agent provides recommendation based on use case"
+    max_turns: 4
+    
+  product_recommendation:
+    steps:
+    - "[REPLACE: I'm looking for [type of product] but don't know which one]"
+    - "What do you recommend?"
+    expected_results:
+    - "Agent asks clarifying questions about needs/budget"
+    - "Agent provides personalized recommendations"
+    - "Agent explains reasoning for recommendations"
+    max_turns: 5
+
+  # ============================================================================
+  # ORDERS & SHIPPING TESTS
+  # Questions about order status, shipping times, tracking, delivery
+  # ============================================================================
+  
+  order_status:
+    steps:
+    - "Where is my order?"
+    expected_results:
+    - "Agent asks for order number or email"
+    - "Agent explains how to check order status"
+    - "Agent offers to help with specific order lookup"
+    max_turns: 3
+    
+  shipping_timeframe:
+    steps:
+    - "[REPLACE: How long does shipping take?]"
+    expected_results:
+    - "Agent provides shipping timeframe information"
+    - "Agent mentions different shipping options if available"
+    - "Agent explains factors that affect delivery time"
+    max_turns: 2
+    
+  international_shipping:
+    steps:
+    - "[REPLACE: Do you ship to [country]?]"
+    expected_results:
+    - "Agent provides international shipping information"
+    - "Agent mentions any restrictions or additional costs"
+    max_turns: 2
+    
+  order_modification:
+    steps:
+    - "Can I change my order?"
+    - "I want to add another item"
+    expected_results:
+    - "Agent explains order modification policy"
+    - "Agent provides steps to modify order"
+    - "Agent offers to help with the modification"
+    max_turns: 4
+
+  # ============================================================================
+  # RETURNS & EXCHANGES TESTS
+  # Questions about return policy, refunds, exchanges, damaged items
+  # ============================================================================
+  
+  return_policy:
+    steps:
+    - "What's your return policy?"
+    expected_results:
+    - "Agent provides clear return policy information"
+    - "Agent mentions timeframe for returns"
+    - "Agent explains return process"
+    max_turns: 2
+    
+  initiate_return:
+    steps:
+    - "I want to return an item"
+    - "Order number is [12345]"
+    expected_results:
+    - "Agent asks for order details"
+    - "Agent explains return process"
+    - "Agent offers to help initiate return"
+    max_turns: 4
+    
+  exchange_request:
+    steps:
+    - "[REPLACE: Can I exchange [item] for a different [size/color]?]"
+    expected_results:
+    - "Agent explains exchange policy"
+    - "Agent checks availability of desired item"
+    - "Agent provides exchange process steps"
+    max_turns: 3
+    
+  damaged_item:
+    steps:
+    - "My item arrived damaged"
+    expected_results:
+    - "Agent expresses concern and apologizes"
+    - "Agent explains process for damaged items"
+    - "Agent offers immediate resolution options"
+    max_turns: 3
+
+  # ============================================================================
+  # STORE POLICIES TESTS
+  # Questions about payment, store hours, contact info, warranties
+  # ============================================================================
+  
+  payment_methods:
+    steps:
+    - "What payment methods do you accept?"
+    expected_results:
+    - "Agent lists all accepted payment methods"
+    - "Agent mentions any payment-related policies"
+    max_turns: 2
+    
+  store_contact:
+    steps:
+    - "How can I contact customer service?"
+    expected_results:
+    - "Agent provides contact information"
+    - "Agent mentions response times"
+    - "Agent offers to help with immediate questions"
+    max_turns: 2
+    
+  price_match:
+    steps:
+    - "[REPLACE: Do you price match?]"
+    expected_results:
+    - "Agent explains price match policy if applicable"
+    - "Agent provides requirements for price matching"
+    max_turns: 2
+
+  # ============================================================================
+  # PRODUCT-SPECIFIC TESTS (Customize for your store)
+  # Replace this section with questions specific to your products
+  # ============================================================================
+  
+  product_specific_1:
+    steps:
+    - "[REPLACE: Store-specific product question]"
+    expected_results:
+    - "[REPLACE: Expected behavior]"
+    max_turns: 3
+    # Example for One Piece cards:
+    # - "What's the best starter deck for beginners?"
+    # - "Agent recommends beginner-friendly decks"
+    # - "Agent explains why these decks are good for beginners"
+    
+  product_specific_2:
+    steps:
+    - "[REPLACE: Another store-specific question]"
+    expected_results:
+    - "[REPLACE: Expected behavior]"
+    max_turns: 3
+    
+  product_specific_3:
+    steps:
+    - "[REPLACE: Third store-specific question]"
+    expected_results:
+    - "[REPLACE: Expected behavior]"
+    max_turns: 3
+
+  # ============================================================================
+  # MULTI-TURN CONVERSATION TESTS
+  # Complex scenarios that require back-and-forth conversation
+  # ============================================================================
+  
+  complex_purchase_decision:
+    steps:
+    - "[REPLACE: I'm looking for a gift]"
+    - "[REPLACE: It's for my friend who likes [hobby]]"
+    - "[REPLACE: Budget is around $[amount]]"
+    expected_results:
+    - "Agent asks clarifying questions about recipient"
+    - "Agent provides personalized recommendations"
+    - "Agent considers budget constraints"
+    - "Agent offers to show specific products"
+    max_turns: 6
+    
+  troubleshooting_scenario:
+    steps:
+    - "[REPLACE: I'm having trouble with [issue]]"
+    - "[REPLACE: I tried [solution] but it didn't work]"
+    expected_results:
+    - "Agent acknowledges the problem"
+    - "Agent asks diagnostic questions"
+    - "Agent provides step-by-step solutions"
+    - "Agent offers escalation if needed"
+    max_turns: 5
+
+  # ============================================================================
+  # EDGE CASES & SPECIAL SCENARIOS
+  # Unusual or complex situations that occasionally occur
+  # ============================================================================
+  
+  out_of_stock_alternative:
+    steps:
+    - "[REPLACE: Question about popular item that's often out of stock]"
+    expected_results:
+    - "Agent checks availability"
+    - "Agent offers similar alternatives"
+    - "Agent explains restock timeline if applicable"
+    max_turns: 3
+    
+  bulk_order_inquiry:
+    steps:
+    - "[REPLACE: Can I order [large quantity] of [item]?]"
+    expected_results:
+    - "Agent acknowledges bulk order request"
+    - "Agent provides information about bulk ordering"
+    - "Agent offers to connect with appropriate team if needed"
+    max_turns: 3
+    
+  special_request:
+    steps:
+    - "[REPLACE: Unusual customer request specific to your store]"
+    expected_results:
+    - "Agent handles request professionally"
+    - "Agent provides information or alternatives"
+    max_turns: 3
+
+# ============================================================================
+# NOTES FOR CUSTOMIZATION
+# ============================================================================
+#
+# 1. Replace all [PLACEHOLDERS] with actual customer questions
+# 2. Update expected_results to match your store's policies and capabilities
+# 3. Adjust max_turns based on conversation complexity
+# 4. Add priority tags in comments (High/Medium/Low)
+# 5. Include frequency data in comments (e.g., "Asked 50x/month")
+# 6. Remove sections that don't apply to your store
+# 7. Add new sections for store-specific categories
+#
+# To run this test suite:
+#   python -m agenteval.cli run --config store_specific_tests.yml
+#
+# To run specific tests:
+#   python -m agenteval.cli run --config store_specific_tests.yml --test top_question_1
+#
+# ============================================================================
