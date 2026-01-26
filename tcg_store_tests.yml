@@ -1,0 +1,200 @@
+# TCG Store - Top Customer Questions Test Suite
+# Based on Store Discovery Worksheet feedback
+# Created: 2026-01-26
+# 
+# These tests cover the most frequently asked questions identified
+# by the store owner during the discovery process.
+
+evaluator:
+  model: claude-3
+
+target:
+  type: shopify_extensions.targets.shopify_agent_target.ShopifyAgentTarget
+  base_url: https://localhost:3458
+  shop_id: test-shop
+  shop_domain: https://theprofmeta-dev.myshopify.com
+  timeout: 30
+
+tests:
+  # ============================================================================
+  # TOP 10 CUSTOMER QUESTIONS (from Store Discovery Worksheet)
+  # ============================================================================
+  
+  # 1. Order tracking (most common)
+  order_tracking:
+    steps:
+    - "Where is my order?"
+    expected_results:
+    - Agent attempts to look up order status or requests authentication
+    - Agent does NOT ask unnecessary follow-up questions
+    - Response is concise and helpful
+    max_turns: 2
+
+  # 2. Return policy
+  return_policy:
+    steps:
+    - "What is the return policy?"
+    expected_results:
+    - Agent provides return policy information directly
+    - Agent does NOT over-explain or ask unnecessary questions
+    - Response includes key policy details (timeframe, conditions)
+    max_turns: 1
+
+  # 3. Product availability (generic)
+  product_in_stock:
+    steps:
+    - "Do you have Charizard cards in stock?"
+    expected_results:
+    - Agent searches store inventory
+    - Agent provides availability and price (if in stock)
+    - Agent assumes Near Mint condition without asking
+    - Response is concise
+    max_turns: 1
+
+  # 4. Price inquiry
+  price_inquiry:
+    steps:
+    - "What is the price of the Pokemon Scarlet & Violet booster box?"
+    expected_results:
+    - Agent searches for the product
+    - Agent provides store price directly
+    - Agent does NOT show market price if it's lower than store price
+    max_turns: 1
+
+  # 5. Pre-order availability
+  preorder_available:
+    steps:
+    - "Is the new One Piece set available for pre-order?"
+    expected_results:
+    - Agent searches for pre-order products
+    - Agent provides pre-order status and pricing if available
+    - Response is direct and helpful
+    max_turns: 1
+
+  # 6. Pre-order timing
+  preorder_timing:
+    steps:
+    - "When will the next Pokemon set be available for pre-order?"
+    expected_results:
+    - Agent provides information about upcoming pre-orders if known
+    - If unknown, agent says so without excessive apology
+    - Response is concise
+    max_turns: 1
+
+  # 7. Set highlights (TCG specific)
+  set_biggest_hits:
+    steps:
+    - "What are the biggest hits in the latest One Piece set?"
+    expected_results:
+    - Agent provides information about chase cards or valuable cards
+    - Agent may use card search tools to find high-value cards
+    - Response focuses on what the customer asked
+    max_turns: 2
+
+  # 8. Chase card inquiry
+  chase_card_value:
+    steps:
+    - "What's the chase card in OP-09?"
+    expected_results:
+    - Agent identifies valuable/sought-after cards from the set
+    - Agent provides relevant pricing info
+    - Response is focused and not overly verbose
+    max_turns: 2
+
+  # 9. Best value products
+  best_value_product:
+    steps:
+    - "Which sealed product has the best value right now?"
+    expected_results:
+    - Agent provides recommendation based on available products
+    - Agent considers price-to-value ratio
+    - Response is helpful without being overwhelming
+    max_turns: 2
+
+  # 10. Collection-specific search (Pokemon Trainer Gallery)
+  trainer_gallery_search:
+    steps:
+    - "Show me all the Trainer Gallery cards you have from Sword and Shield"
+    expected_results:
+    - Agent searches for Trainer Gallery cards
+    - Agent provides results from inventory
+    - Agent assumes Near Mint condition
+    - Response shows available cards with prices
+    max_turns: 2
+
+  # ============================================================================
+  # CONCISENESS TESTS (verify new prompt behavior)
+  # ============================================================================
+
+  simple_yes_no_question:
+    steps:
+    - "Do you have OP01-060?"
+    expected_results:
+    - Agent gives a direct yes/no answer with price if available
+    - Agent does NOT ask clarifying questions
+    - Agent does NOT provide excessive context
+    - Response is 1-3 sentences max
+    max_turns: 1
+
+  simple_price_check:
+    steps:
+    - "How much is a Pikachu VMAX?"
+    expected_results:
+    - Agent searches and provides price
+    - Agent does NOT ask which version unless multiple found
+    - Agent assumes Near Mint condition
+    - Response is concise
+    max_turns: 1
+
+  # ============================================================================
+  # MARKET PRICE DISPLAY TESTS (verify new pricing rules)
+  # ============================================================================
+
+  in_stock_no_market_price_shown:
+    steps:
+    - "Do you have OP01-060 in stock and what's it worth?"
+    expected_results:
+    - If in stock and market price < store price, agent shows ONLY store price
+    - Agent does NOT undercut by showing lower market price
+    - Response focuses on store availability
+    max_turns: 2
+
+  out_of_stock_market_price_ok:
+    steps:
+    - "I'm looking for a rare card you might not have - OP12-121 SEC"
+    expected_results:
+    - If out of stock, agent may show market price for reference
+    - Agent clearly indicates item is not available
+    - Response is helpful even when product unavailable
+    max_turns: 2
+
+  # ============================================================================
+  # MULTI-PRODUCT TESTS (Pokemon, Lego, Sports Cards)
+  # ============================================================================
+
+  pokemon_product_search:
+    steps:
+    - "What Pokemon products do you have?"
+    expected_results:
+    - Agent searches store inventory for Pokemon items
+    - Agent provides results without excessive explanation
+    - Response is scannable/readable
+    max_turns: 1
+
+  lego_product_search:
+    steps:
+    - "Do you sell any Lego sets?"
+    expected_results:
+    - Agent searches for Lego products
+    - Agent provides availability directly
+    - Agent does NOT say "we specialize in One Piece" or similar
+    max_turns: 1
+
+  sports_cards_search:
+    steps:
+    - "Got any hockey cards?"
+    expected_results:
+    - Agent searches for sports cards / hockey cards
+    - Agent provides results or indicates if not in stock
+    - Response is helpful regardless of availability
+    max_turns: 1
